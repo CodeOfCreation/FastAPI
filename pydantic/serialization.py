@@ -1,0 +1,26 @@
+from pydantic import BaseModel
+
+
+class Address(BaseModel):
+
+    city:str
+    state:str
+    pin:str
+
+
+class Patient(BaseModel):
+
+    name:str
+    gender:str
+    age:int
+    address:Address
+
+address_dict={'city':'pune','state':'maharashtra','pin':'111111'}
+address1=Address(**address_dict)
+
+patient_dict = {"name": "Mahadev", 'gender':'male',"age": 29,'address':address1}
+patient1=Patient(**patient_dict)
+
+print(patient1)
+
+temp=patient1.model_dump(exclude={'address':['state']})

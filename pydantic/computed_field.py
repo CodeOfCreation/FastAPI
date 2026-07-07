@@ -1,25 +1,33 @@
-from pydantic import BaseModel,EmailStr,AnyUrl , Field
+from pydantic import BaseModel,EmailStr,AnyUrl , Field,model_validator,computed_field
 from typing import List,Dict,Optional,Annotated
 
 class Patient(BaseModel):
-    name: Annotated[str,Field(max_length=50,title='Name of the patient',description='give the name of the patient under the 50 characters')]
+    name: str
     age: int
-    weight:Annotated[float,Field(gt=0,lt=120,strict=True,description='do not put negative values')]
+    weight:float
     email: EmailStr
     linkdin_url: AnyUrl
-    married:Annotated[bool,Field(default=None,description='Select True if u are married')]
+    married:bool
     allergies:Optional[List[str]]= None
     contact:Dict[str,str]
+
+    @computed_field
+    @property
+    def calculate_bmi(self) ->float:
+        bmi= round(self.weight/(self.height**2),2)
+        return bmi
 
 
 def insert_patient_data(patient: Patient):
     print(patient.name)
     print(patient.age)
+    print(patient.calculate_bmi)
     print("inserted successfully")
 
 def update_patient_data(patient: Patient):
     print(patient.name)
     print(patient.age)
+    print(patient.calculate_bmi)
     print("inserted successfully")
 
 patient_dict = {"name": "Mahadev", "age": 29,'weight':60,'married':True,'allergies':['Pollen','Dust'],'contact':{'email':'mhd@gmail.com','phone':'9999999999'}}
